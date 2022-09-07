@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -7,6 +7,7 @@ import { INVALID_FORMAT, REQUIRED_LABEL } from "utils/validators";
 import { PhoneFormat } from "utils/cleaveMasks";
 import { toast } from "react-toastify";
 import LogoImage from "../assets/images/logo.png";
+import ModalConfirm from "components/ModalConfirm";
 
 interface FormProps {
   name: string;
@@ -25,6 +26,8 @@ const initialValues: FormProps = {
 };
 
 const Homepage = () => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   const FormSchema = yup.object().shape({
     name: yup
       .string()
@@ -42,8 +45,8 @@ const Homepage = () => {
       .required(REQUIRED_LABEL),
   });
 
-  const handleSubmit = async (values: FormProps) => {
-    toast.success("Usuário cadastrado com sucesso!");
+  const handleSubmit = (values: FormProps) => {
+    setShowModal(true);
   };
 
   return (
@@ -52,9 +55,8 @@ const Homepage = () => {
 
       <Formik
         initialValues={initialValues}
-        onSubmit={(values: FormProps, { resetForm }) => {
+        onSubmit={(values: FormProps) => {
           handleSubmit(values);
-          resetForm({ values: initialValues });
         }}
         validationSchema={FormSchema}
         validateOnMount
@@ -67,74 +69,94 @@ const Homepage = () => {
           handleBlur,
           handleSubmit,
           isValid,
+          resetForm,
         }) => {
+
+          const confirmRegister = () => {
+            toast.success("Usuário cadastrado com sucesso!");
+            setShowModal(false);
+            resetForm();
+          };
+
           return (
-            <FormContainer onSubmit={handleSubmit}>
-              <Input
-                label="Nome:"
-                placeholder="Insira seu nome aqui"
-                value={values.name}
-                onChange={handleChange("name")}
-                onBlur={handleBlur("name")}
-                error={touched.name && errors.name ? errors.name : undefined}
-                name="name"
+            <>
+              <ModalConfirm
+                onCancel={() => setShowModal(false)}
+                open={showModal}
+                onConfirm={confirmRegister}
               />
 
-              <Input
-                label="Email:"
-                placeholder="Insira seu email aqui"
-                value={values.email}
-                onChange={handleChange("email")}
-                onBlur={handleBlur("email")}
-                error={touched.email && errors.email ? errors.email : undefined}
-                name="email"
-              />
+              <FormContainer onSubmit={handleSubmit}>
+                <Input
+                  label="Nome:"
+                  placeholder="Insira seu nome aqui"
+                  value={values.name}
+                  onChange={handleChange("name")}
+                  onBlur={handleBlur("name")}
+                  error={touched.name && errors.name ? errors.name : undefined}
+                  name="name"
+                />
 
-              <Input
-                label="Telefone:"
-                placeholder="Insira seu telefone aqui"
-                mask={PhoneFormat}
-                value={values.phone}
-                onChange={handleChange("phone")}
-                onBlur={handleBlur("phone")}
-                error={touched.phone && errors.phone ? errors.phone : undefined}
-                name="phone"
-              />
+                <Input
+                  label="Email:"
+                  placeholder="Insira seu email aqui"
+                  value={values.email}
+                  onChange={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={
+                    touched.email && errors.email ? errors.email : undefined
+                  }
+                  name="email"
+                />
 
-              <Input
-                label="Senha:"
-                placeholder="Insira sua senha"
-                type={"password"}
-                value={values.password}
-                onChange={handleChange("password")}
-                onBlur={handleBlur("password")}
-                error={
-                  touched.password && errors.password
-                    ? errors.password
-                    : undefined
-                }
-                name="password"
-              />
+                <Input
+                  label="Telefone:"
+                  placeholder="Insira seu telefone aqui"
+                  mask={PhoneFormat}
+                  value={values.phone}
+                  onChange={handleChange("phone")}
+                  onBlur={handleBlur("phone")}
+                  error={
+                    touched.phone && errors.phone ? errors.phone : undefined
+                  }
+                  name="phone"
+                />
 
-              <Input
-                label="Confirmar senha:"
-                placeholder="Confirme sua senha"
-                type={"password"}
-                value={values.confirmPassword}
-                onChange={handleChange("confirmPassword")}
-                onBlur={handleBlur("confirmPassword")}
-                error={
-                  touched.confirmPassword && errors.confirmPassword
-                    ? errors.confirmPassword
-                    : undefined
-                }
-                name="confirmPassword"
-              />
+                <Input
+                  label="Senha:"
+                  placeholder="Insira sua senha"
+                  type={"password"}
+                  value={values.password}
+                  onChange={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  error={
+                    touched.password && errors.password
+                      ? errors.password
+                      : undefined
+                  }
+                  name="password"
+                />
 
-              <Button type="submit" disabled={!isValid}>
-                Salvar
-              </Button>
-            </FormContainer>
+                <Input
+                  label="Confirmar senha:"
+                  placeholder="Confirme sua senha"
+                  type={"password"}
+                  value={values.confirmPassword}
+                  onChange={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  error={
+                    touched.confirmPassword && errors.confirmPassword
+                      ? errors.confirmPassword
+                      : undefined
+                  }
+                  name="confirmPassword"
+                />
+
+                <Button type="submit" disabled={!isValid}>
+                  Salvar
+                </Button>
+              </FormContainer>
+            </>
           );
         }}
       </Formik>
