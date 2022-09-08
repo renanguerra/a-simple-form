@@ -2,7 +2,9 @@
 
 Um pequeno formulário de cadastro feito utilizando React, Typescript, Formik, yup e CleaveJS.
 
-Link para demonstração: https://a-simple-form-f8zayga5y-renanguerra.vercel.app/
+Link para demonstração: https://a-simple-form.vercel.app/
+
+- Feature: Foi adicionada um modal de confirmação
 
 ![gif](https://user-images.githubusercontent.com/53278938/188688480-723194b9-98fe-4674-800a-9c2baf441724.gif)
 
